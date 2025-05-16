@@ -15,5 +15,31 @@
 
 ---
 
-## 📁 Project Structure
+## 🚀 Getting Started
 
+1. **Clone the repo**
+
+```bash
+git clone https://github.com/vildursn/RuleLawyer.git
+```
+2. Upload your rulebook as a pdf to data/raw
+3. Install necessary packages
+```bash
+   pip install -r requirements.txt
+```
+4. Add your OpenAI key to the .env file
+5. Run the following
+
+# Extract and chunk rulebooks
+```bash
+python src/ingest.py
+```
+# Embed the text chunks
+```bash
+python src/embed.py
+```
+
+# Ask questions (WIP)
+```bash
+python src/rag.py
+```
