@@ -1,13 +1,10 @@
 # Ignore .env as it contains your API keys
 .env
 
-# Ignore everything inside data/
-data/*
-!data/.gitkeep
-!data/raw/
-!data/processed/
-!data/embeddings/
+# Ignore files inside data/ folders, but not the folders themselves
+data/raw/*
+data/processed/*
+data/embeddings/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/embeddings/.gitkeep
-
