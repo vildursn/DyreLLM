@@ -1,22 +1,20 @@
 import os
 from pathlib import Path
-import openai
 import json
+from openai import OpenAI
 from dotenv import load_dotenv
 
 load_dotenv()
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 PROCESSED_DIR = Path("data/processed")
 EMBEDDINGS_DIR = Path("data/embeddings")
 EMBEDDINGS_DIR.mkdir(parents=True, exist_ok=True)
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
-if openai.api_key is None:
-    raise ValueError("Please set the OPENAI_API_KEY environment variable")
-
 def get_embedding(text, model="text-embedding-ada-002"):
-    response = openai.embedding.create(input=text, model=model)
-    return response['data'][0]['embedding']
+    response = client.embeddings.create(input=[text], model=model)
+    return response.data[0].embedding
 
 def embed_chunks():
     for txt_file in PROCESSED_DIR.glob("*.txt"):
