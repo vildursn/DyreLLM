@@ -1,0 +1,1 @@
+🎲 RuleLawyer – An AI-powered assistant that helps you look up and understand board game rules using Retrieval-Augmented Generation (RAG). Upload your rulebooks and ask it anything!
