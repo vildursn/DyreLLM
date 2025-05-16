@@ -1,4 +1,4 @@
-🎲 RuleLawyer – An AI-powered assistant that helps you look up and understand board game rules using Retrieval-Augmented Generation (RAG). Upload your rulebooks and ask it anything!
+
 
 # 🎲 RuleLawyer
 
@@ -30,16 +30,16 @@ git clone https://github.com/vildursn/RuleLawyer.git
 4. Add your OpenAI key to the .env file
 5. Run the following
 
-# Extract and chunk rulebooks
+### Extract and chunk rulebooks
 ```bash
 python src/ingest.py
 ```
-# Embed the text chunks
+### Embed the text chunks
 ```bash
 python src/embed.py
 ```
 
-# Ask questions (WIP)
+### Ask questions (WIP)
 ```bash
 python src/rag.py
 ```
