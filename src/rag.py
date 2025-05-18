@@ -54,6 +54,6 @@ def answer_question(question):
     return response.choices[0].message.content.strip()
 
 if __name__ == "__main__":
-    q = input("Hva lurer du på? ")
-    print("\nSvar:\n")
+    q = input("What do you want to know? ")
+    print("\nReply:\n")
     print(answer_question(q))
