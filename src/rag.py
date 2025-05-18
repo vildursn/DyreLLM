@@ -1,7 +1,12 @@
 import json
 from pathlib import Path
-import openai
 import numpy as np
+from openai import OpenAI
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 EMBEDDINGS_DIR = Path("data/embeddings")
 
@@ -26,9 +31,9 @@ def retrieve_similar(text_embedding, embeddings, texts, top_k=3):
     # Return the top_k matching texts
     return [texts[i] for i in top_indices]
 
-def get_embedding(text, model="text-embedding-ada-002"):
-    response = openai.Embedding.create(input=text, model=model)
-    return np.array(response['data'][0]['embedding'])
+def get_embedding(text, model="text-embedding-3-small"):
+    response = client.embeddings.create(input=[text], model=model)
+    return np.array(response.data[0].embedding)
 
 def answer_question(question):
     embeddings, texts = load_embeddings()
@@ -39,7 +44,16 @@ def answer_question(question):
 
     prompt = f"Answer the question based on the following context:\n\n{context}\n\nQuestion: {question}\nAnswer:"
 
-    response = openai.ChatCompletion.create(
-        model="gpt-4o-mini",
+    response = client.chat.completions.create(
+        model="gpt-4o",
         messages=[{"role": "user", "content": prompt}],
-        max_tokens=_
+        max_tokens=300,
+        temperature=0.3
+    )
+
+    return response.choices[0].message.content.strip()
+
+if __name__ == "__main__":
+    q = input("Hva lurer du på? ")
+    print("\nSvar:\n")
+    print(answer_question(q))
