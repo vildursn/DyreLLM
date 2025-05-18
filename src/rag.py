@@ -54,6 +54,11 @@ def answer_question(question):
     return response.choices[0].message.content.strip()
 
 if __name__ == "__main__":
-    q = input("What do you want to know? ")
-    print("\nReply:\n")
-    print(answer_question(q))
+    print(" Hi! I am the RuleLawyer. I will answer your questions based on the data you have given me. \n")
+    while True:
+        q = input("What do you want to know? (type 'exit' to quit) ")
+        if q.lower() == "exit":
+            break
+        print("\nReply:\n")
+        print(answer_question(q))
+    
