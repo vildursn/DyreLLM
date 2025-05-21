@@ -4,3 +4,4 @@ python-dotenv
 PyMuPDF
 tqdm
 nltk
+gradio
