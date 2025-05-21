@@ -1,6 +1,9 @@
 import fitz  # PyMuPDF
 from pathlib import Path
 from typing import List
+import nltk
+nltk.download('punkt_tab')
+from nltk.tokenize import sent_tokenize
 
 RAW_DIR = Path("data/raw")
 PROCESSED_DIR = Path("data/processed")
@@ -20,10 +23,26 @@ def extract_text_from_pdf(pdf_path: Path) -> str:
 
 
 def split_text_into_chunks(text: str, chunk_size: int = CHUNK_SIZE) -> List[str]:
-    """Splits a string into chunks of approximately `chunk_size` words."""
-    words = text.split()
-    return [" ".join(words[i:i + chunk_size]) for i in range(0, len(words), chunk_size)]
+    """Splits text into chunks of approximately `chunk_size` words, preserving sentences."""
+    sentences = sent_tokenize(text)
+    chunks = []
+    current_chunk = []
+    current_length = 0
 
+    for sentence in sentences:
+        words = sentence.split()
+        if current_length + len(words) > chunk_size and current_chunk:
+            # Start a new chunk
+            chunks.append(" ".join(current_chunk))
+            current_chunk = []
+            current_length = 0
+        current_chunk.append(sentence)
+        current_length += len(words)
+
+    if current_chunk:
+        chunks.append(" ".join(current_chunk))
+
+    return chunks
 
 def process_all_pdfs():
     """Processes all PDF files in the raw directory tree and saves text chunks, mirroring the folder structure."""
