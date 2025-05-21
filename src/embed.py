@@ -17,14 +17,19 @@ def get_embedding(text, model="text-embedding-ada-002"):
     return response.data[0].embedding
 
 def embed_chunks():
-    for txt_file in PROCESSED_DIR.glob("*.txt"):
-        emb_file = EMBEDDINGS_DIR / f"{txt_file.stem}.json"
+    for txt_file in PROCESSED_DIR.rglob("*.txt"):
+        # Mirror the folder structure in EMBEDDINGS_DIR
+        relative_folder = txt_file.parent.relative_to(PROCESSED_DIR)
+        out_folder = EMBEDDINGS_DIR / relative_folder
+        out_folder.mkdir(parents=True, exist_ok=True)
+
+        emb_file = out_folder / f"{txt_file.stem}.json"
         
         if emb_file.exists():
-            print(f"Skipping {txt_file.name} - embedding already exists")
+            print(f"Skipping {txt_file.relative_to(PROCESSED_DIR)} - embedding already exists")
             continue
         
-        print(f"Embedding {txt_file.name}")
+        print(f"Embedding {txt_file.relative_to(PROCESSED_DIR)}")
         text = txt_file.read_text(encoding="utf-8")
         embedding = get_embedding(text)
         

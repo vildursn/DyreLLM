@@ -26,16 +26,14 @@ def split_text_into_chunks(text: str, chunk_size: int = CHUNK_SIZE) -> List[str]
 
 
 def process_all_pdfs():
-    """Processes all PDF files in the raw directory and saves text chunks."""
-    PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
-
-    pdf_files = list(RAW_DIR.glob("*.pdf"))
+    """Processes all PDF files in the raw directory tree and saves text chunks, mirroring the folder structure."""
+    pdf_files = list(RAW_DIR.rglob("*.pdf"))
     if not pdf_files:
         print("📂 No PDF files found in 'data/raw/'.")
         return
 
     for file in pdf_files:
-        print(f"📄 Processing: {file.name}")
+        print(f"📄 Processing: {file.relative_to(RAW_DIR)}")
         text = extract_text_from_pdf(file)
         if not text.strip():
             print(f"⚠️ No text found in {file.name}, skipping.")
@@ -43,11 +41,16 @@ def process_all_pdfs():
 
         chunks = split_text_into_chunks(text)
 
+        # Mirror the folder structure in PROCESSED_DIR
+        relative_folder = file.parent.relative_to(RAW_DIR)
+        out_folder = PROCESSED_DIR / relative_folder
+        out_folder.mkdir(parents=True, exist_ok=True)
+
         for i, chunk in enumerate(chunks):
-            out_file = PROCESSED_DIR / f"{file.stem}_chunk_{i:03d}.txt"
+            out_file = out_folder / f"{file.stem}_chunk_{i:03d}.txt"
             out_file.write_text(chunk, encoding="utf-8")
 
-        print(f"✅ Finished {file.name} – saved {len(chunks)} chunks.")
+        print(f"✅ Finished {file.relative_to(RAW_DIR)} – saved {len(chunks)} chunks.")
 
 
 if __name__ == "__main__":
