@@ -4,7 +4,6 @@ import numpy as np
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
-
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -92,14 +91,4 @@ def answer_question(question, embeddings, texts):
     )
     return response.choices[0].message.content.strip()
 
-if __name__ == "__main__":
-    print("Hi! I am the RuleLawyer. I will answer your questions based on the data you have given me.\n")
-    selected_paths = select_rulebook_and_extensions()
-    embeddings, texts = load_embeddings(selected_paths)
-    while True:
-        q = input("What do you want to know? (type 'exit' to quit) ")
-        if q.lower() == "exit":
-            break
-        print("\nReply:\n")
-        print(answer_question(q, embeddings, texts))
     
