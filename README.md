@@ -17,17 +17,21 @@
 
 ## 🚀 Getting Started
 
-1. **Clone the repo**
+1. Clone the repo
 
 ```bash
 git clone https://github.com/vildursn/RuleLawyer.git
 ```
-2. Upload your rulebook as a pdf to data/raw
-3. Install necessary packages
+
+2. Install necessary packages
 ```bash
    pip install -r requirements.txt
 ```
+
+3. Create a folder inside `data/raw` for your rulebook, and upload your PDF(s) into that folder
+
 4. Add your OpenAI key to the .env file
+
 5. Run the following
 
 ### Extract and chunk rulebooks
