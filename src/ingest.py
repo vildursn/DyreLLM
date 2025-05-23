@@ -23,24 +23,26 @@ def extract_text_from_pdf(pdf_path: Path) -> str:
 
 
 def split_text_into_chunks(text: str, chunk_size: int = CHUNK_SIZE) -> List[str]:
-    """Splits text into chunks of approximately `chunk_size` words, preserving sentences."""
-    sentences = sent_tokenize(text)
+    """Splits text into chunks of approximately `chunk_size` words, preserving paragraphs."""
+    paragraphs = [p.strip() for p in text.split('\n\n') if p.strip()]
     chunks = []
     current_chunk = []
     current_length = 0
 
-    for sentence in sentences:
-        words = sentence.split()
-        if current_length + len(words) > chunk_size and current_chunk:
-            # Start a new chunk
-            chunks.append(" ".join(current_chunk))
-            current_chunk = []
-            current_length = 0
-        current_chunk.append(sentence)
-        current_length += len(words)
+    for paragraph in paragraphs:
+        sentences = sent_tokenize(paragraph)
+        for sentence in sentences:
+            words = sentence.split()
+            if current_length + len(words) > chunk_size and current_chunk:
+                # Start a new chunk
+                chunks.append(" ".join(current_chunk))
+                current_chunk = []
+                current_length = 0
+            current_chunk.append(sentence)
+            current_length += len(words)
 
-    if current_chunk:
-        chunks.append(" ".join(current_chunk))
+        if current_chunk:
+            chunks.append(" ".join(current_chunk))
 
     return chunks
 
