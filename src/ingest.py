@@ -30,17 +30,19 @@ def split_text_into_chunks(text: str, chunk_size: int = CHUNK_SIZE) -> List[str]
     current_length = 0
 
     for paragraph in paragraphs:
-        words = paragraph.split()
-        if current_length + len(words) > chunk_size and current_chunk:
-            # Start a new chunk
-            chunks.append("\n\n".join(current_chunk))
-            current_chunk = []
-            current_length = 0
-        current_chunk.append(paragraph)
-        current_length += len(words)
+        sentences = sent_tokenize(paragraph)
+        for sentence in sentences:
+            words = sentence.split()
+            if current_length + len(words) > chunk_size and current_chunk:
+                # Start a new chunk
+                chunks.append(" ".join(current_chunk))
+                current_chunk = []
+                current_length = 0
+            current_chunk.append(sentence)
+            current_length += len(words)
 
-    if current_chunk:
-        chunks.append("\n\n".join(current_chunk))
+        if current_chunk:
+            chunks.append(" ".join(current_chunk))
 
     return chunks
 
