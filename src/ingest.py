@@ -22,29 +22,38 @@ def extract_text_from_pdf(pdf_path: Path) -> str:
         return ""
 
 
-def split_text_into_chunks(text: str, chunk_size: int = CHUNK_SIZE) -> List[str]:
-    """Splits text into chunks of approximately `chunk_size` words, preserving paragraphs."""
+from typing import List, Tuple
+from nltk.tokenize import sent_tokenize
+
+def split_text_into_chunks_with_paragraphs(text: str, chunk_size: int = 500) -> List[Tuple[str, str]]:
+    """
+    Splits text into chunks of approximately `chunk_size` words, preserving paragraphs and sentence integrity.
+    Returns a list of (chunk, parent_paragraph) tuples.
+    """
     paragraphs = [p.strip() for p in text.split('\n\n') if p.strip()]
-    chunks = []
-    current_chunk = []
-    current_length = 0
+    chunks_with_parents = []
 
     for paragraph in paragraphs:
         sentences = sent_tokenize(paragraph)
+        current_chunk = []
+        current_length = 0
+
         for sentence in sentences:
             words = sentence.split()
             if current_length + len(words) > chunk_size and current_chunk:
-                # Start a new chunk
-                chunks.append(" ".join(current_chunk))
+                chunk_text = " ".join(current_chunk)
+                chunks_with_parents.append((chunk_text, paragraph))
                 current_chunk = []
                 current_length = 0
             current_chunk.append(sentence)
             current_length += len(words)
 
         if current_chunk:
-            chunks.append(" ".join(current_chunk))
+            chunk_text = " ".join(current_chunk)
+            chunks_with_parents.append((chunk_text, paragraph))
 
-    return chunks
+    return chunks_with_parents
+
 
 def process_all_pdfs():
     """Processes all PDF files in the raw directory tree and saves text chunks, mirroring the folder structure."""
@@ -60,7 +69,7 @@ def process_all_pdfs():
             print(f"⚠️ No text found in {file.name}, skipping.")
             continue
 
-        chunks = split_text_into_chunks(text)
+        chunks = split_text_into_chunks_with_paragraphs(text)
 
         # Mirror the folder structure in PROCESSED_DIR
         relative_folder = file.parent.relative_to(RAW_DIR)
